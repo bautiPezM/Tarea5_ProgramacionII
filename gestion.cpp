@@ -30,7 +30,7 @@ int busquedaID() {
 	std::cout << "Ingrese el ID de la reserva a buscar: ";
 	std::cin >> id;
 	Reserva reservas;
-	std::ifstream archivo("reservas.dat", std::ios::binary);
+	std::ifstream archivo("reservas.bin", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -51,36 +51,15 @@ int busquedaID() {
 	std::cout << "Reserva con ID " << id << " no encontrada." << std::endl;
 	return 0; // Reserva no encontrada
 }
-int altareservas() {
-	std::ofstream archivo("reservas.soc", std::ios::binary| std::ios::app);
-	if (!archivo) {
-		std::cout << "Error al abrir el archivo" << std::endl;
-		return 1;
-	}
-	
-	Reservas p;
-	std::cout << "id de reserva: ";
-	std::cin >> p.idReserva;
-	std::cout << "Responsable: ";
-	std::cin >> p.Responsable;
-	std::cout << "Aula: ";
-	std::cin >> p.Aula;
-	std::cout << "Cantidad de personas: ";
-	std::cin >> p.CantidadPersonas;
-	p.confirmada = false;
-	p.Activo = true;
 
-	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
-	archivo.close();
-}
 int altareservas() {
-	std::ofstream archivo("reservas.soc", std::ios::binary| std::ios::app);
+	std::ofstream archivo("reservas.bin", std::ios::binary| std::ios::app);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return 1;
 	}
 	
-	Reservas p;
+	Reserva p;
 	std::cout << "id de reserva: ";
 	std::cin >> p.idReserva;
 	std::cout << "Responsable: ";
@@ -103,7 +82,7 @@ int bajaReserva() {
     }
     int idbuscar;
     std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
-    reservass r;
+    Reserva r;
     bool encontrado = false;
     while (archivo.read(reinterpret_cast<char*>(&r), sizeof(reservass))){
         if (r.idreservas == idbuscar && r.Activo) {
@@ -113,6 +92,6 @@ int bajaReserva() {
             archivo.seekp(posicion);
             archivo.write(reinterpret_cast<char*>(&r), sizeof(reservass));
         }
-    return 0;
     }
+	return 0;
 }
