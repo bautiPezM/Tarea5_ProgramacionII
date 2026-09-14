@@ -51,3 +51,25 @@ int busquedaID() {
 	std::cout << "Reserva con ID " << id << " no encontrada." << std::endl;
 	return 0; // Reserva no encontrada
 }
+int gestionar::altareservas() {
+	std::ofstream archivo("reservas.soc", std::ios::binary| std::ios::app);
+	if (!archivo) {
+		std::cout << "Error al abrir el archivo" << std::endl;
+		return 1;
+	}
+	
+	Reservas p;
+	std::cout << "id de reserva: ";
+	std::cin >> p.idReserva;
+	std::cout << "Responsable: ";
+	std::cin >> p.Responsable;
+	std::cout << "Aula: ";
+	std::cin >> p.Aula;
+	std::cout << "Cantidad de personas: ";
+	std::cin >> p.CantidadPersonas;
+	p.confirmada = false;
+	p.Activo = true;
+
+	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
+	archivo.close();
+}
