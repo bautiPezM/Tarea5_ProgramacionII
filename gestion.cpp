@@ -96,3 +96,106 @@ int bajaReserva() {
     }
 	return 0;
 }
+
+
+
+
+
+#include "gestionar.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+
+struct Reservas {
+	int idReserva;
+	char Responsable[50];
+	char Aula[50];
+	int CantidadPersonas;
+	bool confirmada;
+	bool Activo;
+
+};
+
+int busquedaID() {
+	int id;
+	std::cout << "Ingrese el ID de la reserva a buscar: ";
+	std::cin >> id;
+	Reserva reservas;
+	std::ifstream archivo("reservas.dat", std::ios::binary);
+	if (!archivo) {
+		std::cout << "Error al abrir el archivo" << std::endl;
+		return -1;
+	}
+	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reserva))) {
+		if (reservas.idReserva == id) {
+			std::cout << "ID: " << reservas.idReserva << std::endl;
+			std::cout << "Responsable: " << reservas.Responsable << std::endl;
+			std::cout << "Aula: " << reservas.Aula << std::endl;
+			std::cout << "Cantidad de personas: " << reservas.CantidadPersonas << std::endl;
+			std::cout << "Confirmada: " << (reservas.confirmada ? "Si" : "No") << std::endl;
+			std::cout << "Activo: " << (reservas.Activo ? "Si" : "No") << std::endl;
+			archivo.close();
+			return reservas.idReserva; // Reserva encontrada
+		}
+	}
+	archivo.close();
+	std::cout << "Reserva con ID " << id << " no encontrada." << std::endl;
+	return 0; // Reserva no encontrada
+}
+
+
+int modificarReserva() {
+
+	std::fstream archivo("reservas.dat", std::ios::in | std::ios::out | std::ios::binary);
+	if (!archivo) {
+		std::cout << "Error al abrir el archivo" << std::endl;
+		return;
+	}
+	int idEncontrado = busquedaID();
+	if (idEncontrado == 0) {
+		cout << "no existe el id";
+		return -1;
+
+
+	}
+
+
+	archivo.seekg(0, ios::end);
+	size_t	cantidad = archivo.tellg() / sizeof(reservas);
+
+	reservas* lista = new reservas[cantidad];
+			
+	archivo.seekg(0);
+
+	for (size_t i = 0; i < cantidad; i++) {
+		archivo.read(reinterpret_cast<char*>(&lista[i]), sizeof(reservas));
+	}
+
+	archivo.close();
+
+
+	for (int i = 0; i < cantidad; i++) {
+
+		if (strcmp(lista[i].id, id) == 0) {
+
+			cout << "socio encontrado." << endl;
+			cout << "ingrese el nuevo responsable: ";
+			cin >> lista[i].responsable;
+			cout << "ingrese el nuevo aula: ";
+			cin >> lista[i].aula;
+			cout << "ingrese la nueva cantidad: ";
+			cin >> lista[i].cantidad;
+
+			break;
+		}
+
+	}
+
+
+
+}
+	
+	
+
