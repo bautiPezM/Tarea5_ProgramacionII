@@ -73,3 +73,46 @@ int altareservas() {
 	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
 	archivo.close();
 }
+int altareservas() {
+	std::ofstream archivo("reservas.soc", std::ios::binary| std::ios::app);
+	if (!archivo) {
+		std::cout << "Error al abrir el archivo" << std::endl;
+		return 1;
+	}
+	
+	Reservas p;
+	std::cout << "id de reserva: ";
+	std::cin >> p.idReserva;
+	std::cout << "Responsable: ";
+	std::cin >> p.Responsable;
+	std::cout << "Aula: ";
+	std::cin >> p.Aula;
+	std::cout << "Cantidad de personas: ";
+	std::cin >> p.CantidadPersonas;
+	p.confirmada = false;
+	p.Activo = true;
+
+	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
+	archivo.close();
+}
+int bajaReserva() {
+    std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
+    if (!archivo){
+            std::cerr << "Error al abrir archivo";
+            return -1;
+    }
+    int idbuscar;
+    std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
+    reservass r;
+    bool encontrado = false;
+    while (archivo.read(reinterpret_cast<char*>(&r), sizeof(reservass))){
+        if (r.idreservas == idbuscar && r.Activo) {
+            encontrado = true;
+            int posicion = static_cast<int>(archivo.tellg()) - sizeof(reservass);
+            r.Activo = false;
+            archivo.seekp(posicion);
+            archivo.write(reinterpret_cast<char*>(&r), sizeof(reservass));
+        }
+    return 0;
+    }
+}
