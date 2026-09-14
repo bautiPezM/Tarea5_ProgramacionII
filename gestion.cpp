@@ -90,6 +90,32 @@ void gestionar::modificar() {
 		std::cout << "Numero de socio invalido" << std::endl;
 		return;
 	}
+	
+    int bajaReserva() {
+        std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
+        if (!archivo)  
+        {
+            std::cerr << "Error al abrir archivo";
+            return -1;
+        }
+        int idbuscar;
+        std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
+        reservass r;
+        bool encontrado = false;
+        while (archivo.read(reinterpret_cast<char*>(&r), sizeof(reservass)))
+        {
+            if (r.idreservas == idbuscar && r.Activo) {
+                encontrado = true;
+                int posicion = static_cast<int>(archivo.tellg()) - sizeof(reservass);
+                    r.Activo = false;
+                archivo.seekp(posicion);
+                archivo.write(reinterpret_cast<char*>(&r), sizeof(reservass));
+            }
+
+           return 0;
+        }
+        
+    }
 	socio nuevoSocio;
 	std::cout << "Ingrese el nuevo nombre: ";
 	std::cin >> nuevoSocio.nombre;
