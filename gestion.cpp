@@ -7,7 +7,7 @@
 
 int listaReservas() {
 	Reserva reservas;
-	std::ifstream archivo("reservas.dat", std::ios::binary);
+	std::ifstream archivo("reservas.bin", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -71,7 +71,7 @@ int altareservas() {
 	p.confirmada = false;
 	p.Activo = true;
 
-	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
+	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reserva));
 	archivo.close();
 }
 int bajaReserva() {
@@ -84,13 +84,14 @@ int bajaReserva() {
     std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
     Reserva r;
     bool encontrado = false;
-    while (archivo.read(reinterpret_cast<char*>(&r), sizeof(reservass))){
+    while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reserva))){
         if (r.idreservas == idbuscar && r.Activo) {
             encontrado = true;
-            int posicion = static_cast<int>(archivo.tellg()) - sizeof(reservass);
+            int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reserva);
             r.Activo = false;
             archivo.seekp(posicion);
-            archivo.write(reinterpret_cast<char*>(&r), sizeof(reservass));
+            archivo.write(reinterpret_cast<char*>(&r), sizeof(Reserva));
+			break;
         }
     }
 	return 0;
