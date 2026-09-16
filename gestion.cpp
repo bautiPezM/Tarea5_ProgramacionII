@@ -7,7 +7,7 @@
 
 int listaReservas() {
 	Reserva reservas;
-	std::ifstream archivo("reservas.bin", std::ios::binary);
+	std::ifstream archivo("reservas.dat", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -30,7 +30,7 @@ int busquedaID() {
 	std::cout << "Ingrese el ID de la reserva a buscar: ";
 	std::cin >> id;
 	Reserva reservas;
-	std::ifstream archivo("reservas.bin", std::ios::binary);
+	std::ifstream archivo("reservas.dat", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -53,7 +53,7 @@ int busquedaID() {
 }
 
 int altareservas() {
-	std::ofstream archivo("reservas.bin", std::ios::binary| std::ios::app);
+	std::ofstream archivo("reservas.dat", std::ios::binary| std::ios::app);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return 1;
@@ -75,7 +75,7 @@ int altareservas() {
 	archivo.close();
 }
 int bajaReserva() {
-    std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
+    std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
     if (!archivo){
             std::cerr << "Error al abrir archivo";
             return -1;
@@ -146,4 +146,14 @@ int modificarReserva() {
 	else std::cout << "no existe el id";
 	archivo.close();
 	return 0;
+
+	int guardarArchivo() {
+		ofstream archivo("reservas.dat", ios::binary | std::ios::in | std::ios::out);
+		if (!archivo) throw std::invalid_argument("No hay valores validos");
+		for (size_t i = 0; i < sizeof(Reserva); i++) {
+			archivo.write(reinterpret_cast<const char*>(&lista[i]), sizeof(Reserva));
+		}
+		archivo.close();
+		return 0;
+	}
 }

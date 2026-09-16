@@ -356,7 +356,7 @@ OpenCover/
 ASALocalRun/
 
 # MSBuild Binary and Structured Log
-*.binlog
+*.datlog
 
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
@@ -468,7 +468,7 @@ ehthumbs_vista.db
 [Dd]esktop.ini
 
 # Recycle Bin used on file shares
-$RECYCLE.BIN/
+$RECYCLE.dat/
 
 # Windows Installer files
 *.cab
