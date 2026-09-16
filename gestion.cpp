@@ -157,3 +157,45 @@ int modificarReserva() {
 		return 0;
 	}
 }
+
+int confirmarReserva() {
+	std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
+	if (!archivo) {
+		std::cerr << "Error al abrir archivo";
+		return -1;
+	}
+	int idbuscar;
+	std::cout << "Ingrese el id a confirmar: "; std::cin >> idbuscar;
+	Reserva r;
+	bool encontrado = false;
+	while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reserva))) {
+		if (r.idReserva == idbuscar && r.Activo && r.Confirmado == false) {
+			encontrado = true;
+			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reserva);
+			r.confirmada = true;
+			archivo.seekp(posicion);
+			archivo.write(reinterpret_cast<char*>(&r), sizeof(Reserva));
+			break;
+		}
+		else if (r.idReserva == idbuscar && r.Activo && r.Confirmado == true) {
+			encontrado = true;
+			std::cout << "La reserva ya está confirmada." << std::endl;
+			break;
+		}
+		else if (r.idReserva == idbuscar && !r.Activo) {
+			encontrado = true;
+			std::cout << "La reserva ha sido dada de baja." << std::endl;
+			break;
+		}
+	}
+	if (!encontrado) {
+		std::cout << "No se encontró la reserva con el ID especificado." << std::endl;
+	}
+	archivo.close();
+	return 0;
+}
+
+
+
+
+
