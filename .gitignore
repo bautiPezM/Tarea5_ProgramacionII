@@ -468,7 +468,7 @@ ehthumbs_vista.db
 [Dd]esktop.ini
 
 # Recycle Bin used on file shares
-$RECYCLE.dat/
+$RECYCLE.bin/
 
 # Windows Installer files
 *.cab
