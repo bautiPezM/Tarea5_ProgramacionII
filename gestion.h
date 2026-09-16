@@ -1,18 +1,11 @@
 #pragma once
+
 #include <fstream>
 #include <string>
 #include <vector>
-struct Reservas {
-		int idReserva;
-		char Responsable[50];
-		char Aula[50];
-		int CantidadPersonas;
-		bool confirmada;
-		bool Activo;
 
-};
 
-int altareservas(); 
+int altareservas();
 int listaReservas(); //Consulta general de todas las reservas
 int busquedaID(); //Busqueda de una reserva por ID
 int confirmarReserva(); //Confirmacion de una reserva existente

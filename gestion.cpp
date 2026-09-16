@@ -1,19 +1,28 @@
-#include "gestionar.h"
+#include "gestion.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 
+struct Reservas {
+	int idReserva;
+	char Responsable[50];
+	char Aula[50];
+	int CantidadPersonas;
+	bool confirmada;
+	bool Activo;
+
+};
 
 int listaReservas() {
-	Reserva reservas;
+	Reservas reservas;
 	std::ifstream archivo("reservas.dat", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
 	}
 
-	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reserva))) {
+	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reservas))) {
 		std::cout << "ID: " << reservas.idReserva << std::endl;
 		std::cout << "Responsable: " << reservas.Responsable << std::endl;
 		std::cout << "Aula: " << reservas.Aula << std::endl;
@@ -30,13 +39,13 @@ int busquedaID() {
 	int id;
 	std::cout << "Ingrese el ID de la reserva a buscar: ";
 	std::cin >> id;
-	Reserva reservas;
+	Reservas reservas;
 	std::ifstream archivo("reservas.dat", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
 	}
-	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reserva))) {
+	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reservas))) {
 		if (reservas.idReserva == id) {
 			std::cout << "ID: " << reservas.idReserva << std::endl;
 			std::cout << "Responsable: " << reservas.Responsable << std::endl;
@@ -54,13 +63,13 @@ int busquedaID() {
 }
 
 int altareservas() {
-	std::ofstream archivo("reservas.dat", std::ios::binary| std::ios::app);
+	std::ofstream archivo("reservas.dat", std::ios::binary | std::ios::app);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return 1;
 	}
-	
-	Reserva p;
+
+	Reservas p;
 	std::cout << "id de reserva: ";
 	std::cin >> p.idReserva;
 	std::cout << "Responsable: ";
@@ -72,29 +81,31 @@ int altareservas() {
 	p.confirmada = false;
 	p.Activo = true;
 
-	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reserva));
+	archivo.write(reinterpret_cast<char*>(&p), sizeof(Reservas));
 	archivo.close();
+
+	return 0;
 }
 int bajaReserva() {
-    std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
-    if (!archivo){
-            std::cerr << "Error al abrir archivo";
-            return -1;
-    }
-    int idbuscar;
-    std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
-    Reserva r;
-    bool encontrado = false;
-    while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reserva))){
-        if (r.idreservas == idbuscar && r.Activo) {
-            encontrado = true;
-            int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reserva);
-            r.Activo = false;
-            archivo.seekp(posicion);
-            archivo.write(reinterpret_cast<char*>(&r), sizeof(Reserva));
+	std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
+	if (!archivo) {
+		std::cerr << "Error al abrir archivo";
+		return -1;
+	}
+	int idbuscar;
+	std::cout << "Ingrese el id a eliminar: "; std::cin >> idbuscar;
+	Reservas r;
+	bool encontrado = false;
+	while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reservas))) {
+		if (r.idReserva == idbuscar && r.Activo) {
+			encontrado = true;
+			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reservas);
+			r.Activo = false;
+			archivo.seekp(posicion);
+			archivo.write(reinterpret_cast<char*>(&r), sizeof(Reservas));
 			break;
-        }
-    }
+		}
+	}
 	return 0;
 }
 
@@ -111,74 +122,74 @@ int modificarReserva() {
 		return -1;
 	}
 	Reservas reservas_lectura;
-	bool encontrado;
-	while (archivo.read(reinterpret_cast<char*>(&reservas_lectura), sizeof(reservas))) {
-		if (reservas_lectura.ID == idEncontrado) {
+	bool encontrado = false;
+	while (archivo.read(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas))) {
+		if (reservas_lectura.idReserva == idEncontrado) {
 			encontrado = true;
 
-			int posicion = static_cast<int>(archivo.tellg() - sizeof(Reservas));
+			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reservas);
 			std::cout << "ingrese el nuevo responsable: ";
-			std::cin >> reservas_lectura.responsable;
+			std::cin >> reservas_lectura.Responsable;
 			std::cout << "ingrese el nuevo aula: ";
-			std::cin >> reservas_lectura.aula;
+			std::cin >> reservas_lectura.Aula;
 			std::cout << "ingrese la nueva cantidad de personas: ";
-			std::cin >> reservas_lectura.cantidad;
+			std::cin >> reservas_lectura.CantidadPersonas;
+
 			bool opcion = false;
-			std::cout << "ingrese si es confirmada o activa"<<std::endl;
+
 			do {
-				std::cout << "si escribe 1 selecciona confirmada si escribe 0 selecciona activa: ";
-				cin >> opcion;
-			} while (opcion != 1 && opcion != 0) 
-			if (opcion == 1) reservas_lectura.activa = 1;
-			if (opcion == 0) reservas_lectura.confirmada = 1;
-			
-			std::cin >> reservas_lectura.confirmada;
-			if (reservas_lectura.confirmada == 0) {
-				std::cout << "ingrese si es confirmada, si:1 no:0: ";
-				std::cin >> reservas_lectura.activa;
-			}
+				std::cout << "ingrese si es confirmada" << std::endl;
+				std::cout << "si: 1" << std::endl;
+				std::cout << "no: 0";
+				std::cin >> opcion;
+
+			} while (opcion != 1 && opcion != 0);
+			reservas_lectura.confirmada = opcion;
+
+			do {
+				std::cout << "ingrese si es activa" << std::endl;
+				std::cout << "si: 1" << std::endl;
+				std::cout << "no: 0";
+				std::cin >> reservas_lectura.Activo;
+
+			} while (opcion != 1 && opcion != 0);
+			reservas_lectura.Activo = opcion;
+
 			archivo.seekp(posicion);
 			archivo.write(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas));
 			break;
 		}
 	}
-	if (encontrado){
-		std::cout << "modificacion finalizada." << endl;}
+	if (encontrado) {
+		std::cout << "modificacion finalizada." << std::endl;
+	}
 	else std::cout << "no existe el id";
 	archivo.close();
 	return 0;
 
-	int guardarArchivo() {
-		ofstream archivo("reservas.dat", ios::binary | std::ios::in | std::ios::out);
-		if (!archivo) throw std::invalid_argument("No hay valores validos");
-		for (size_t i = 0; i < sizeof(Reserva); i++) {
-			archivo.write(reinterpret_cast<const char*>(&lista[i]), sizeof(Reserva));
-		}
-		archivo.close();
-		return 0;
-	}
 }
 
 int confirmarReserva() {
-	std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
+	std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
 	if (!archivo) {
 		std::cerr << "Error al abrir archivo";
 		return -1;
 	}
 	int idbuscar;
 	std::cout << "Ingrese el id a confirmar: "; std::cin >> idbuscar;
-	Reserva r;
+	Reservas r;
 	bool encontrado = false;
-	while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reserva))) {
-		if (r.idReserva == idbuscar && r.Activo && r.Confirmado == false) {
+
+	while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reservas))) {
+		if (r.idReserva == idbuscar && r.Activo && r.confirmada == false) {
 			encontrado = true;
-			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reserva);
+			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reservas);
 			r.confirmada = true;
 			archivo.seekp(posicion);
-			archivo.write(reinterpret_cast<char*>(&r), sizeof(Reserva));
+			archivo.write(reinterpret_cast<char*>(&r), sizeof(Reservas));
 			break;
 		}
-		else if (r.idReserva == idbuscar && r.Activo && r.Confirmado == true) {
+		else if (r.idReserva == idbuscar && r.Activo && r.confirmada == true) {
 			encontrado = true;
 			std::cout << "La reserva ya está confirmada." << std::endl;
 			break;
@@ -198,5 +209,20 @@ int confirmarReserva() {
 
 
 
+int guardarArchivo() {
+	std::ofstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
+	if (!archivo) throw std::invalid_argument("No hay valores validos");
 
+	std::vector<Reservas> lista;
+
+	for (size_t i = 0; i < sizeof(Reservas); i++) {
+
+
+
+
+		archivo.write(reinterpret_cast<const char*>(&lista[i]), sizeof(Reservas));
+	}
+	archivo.close();
+	return 0;
+}
 
