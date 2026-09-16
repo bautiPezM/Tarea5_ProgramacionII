@@ -25,6 +25,7 @@ int listaReservas() {
 	archivo.close();
 	return 1;
 }
+
 int busquedaID() {
 	int id;
 	std::cout << "Ingrese el ID de la reserva a buscar: ";
@@ -44,12 +45,12 @@ int busquedaID() {
 			std::cout << "Confirmada: " << (reservas.confirmada ? "Si" : "No") << std::endl;
 			std::cout << "Activo: " << (reservas.Activo ? "Si" : "No") << std::endl;
 			archivo.close();
-			return 1; // Reserva encontrada
+			return reservas.idReserva; // Reserva encontrada
 		}
 	}
 	archivo.close();
 	std::cout << "Reserva con ID " << id << " no encontrada." << std::endl;
-	return 0; // Reserva no encontrada
+	return -1; // Reserva no encontrada
 }
 
 int altareservas() {
