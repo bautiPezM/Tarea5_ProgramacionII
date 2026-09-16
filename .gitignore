@@ -482,3 +482,6 @@ $RECYCLE.dat/
 
 # Vim temporary swap files
 *.swp
+/.vs/slnx.sqlite
+/.gitignore
+/.gitignore
