@@ -111,7 +111,7 @@ int modificarReserva() {
 	}
 	Reservas reservas_lectura;
 	bool encontrado;
-	while (archivo.read(reinterpret_cast<char*>(&reservas_lectura)), sizeof(reservas)) {
+	while (archivo.read(reinterpret_cast<char*>(&reservas_lectura), sizeof(reservas))) {
 		if (reservas_lectura.ID == idEncontrado) {
 			encontrado = true;
 
@@ -128,8 +128,8 @@ int modificarReserva() {
 				std::cout << "si escribe 1 selecciona confirmada si escribe 0 selecciona activa: ";
 				cin >> opcion;
 			} while (opcion != 1 && opcion != 0) 
-			if (opcion == 1)	reservas_lectura.activa = 1;
-			if(opcion == 0) reservas_lectura.confirmada = 1;
+			if (opcion == 1) reservas_lectura.activa = 1;
+			if (opcion == 0) reservas_lectura.confirmada = 1;
 			
 			std::cin >> reservas_lectura.confirmada;
 			if (reservas_lectura.confirmada == 0) {
