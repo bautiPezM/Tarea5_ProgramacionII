@@ -97,6 +97,53 @@ int bajaReserva() {
 	return 0;
 }
 
+int modificarReserva() {
 
+	std::fstream archivo("reservas.dat", std::ios::in | std::ios::out | std::ios::binary);
+	if (!archivo) {
+		std::cout << "Error al abrir el archivo" << std::endl;
+		return -1;
+	}
+	int idEncontrado = busquedaID();
+	if (idEncontrado == -1) {
+		std::cout << "no existe el id" << std::endl;
+		return -1;
+	}
+	Reservas reservas_lectura;
+	bool encontrado;
+	while (archivo.read(reinterpret_cast<char*>(&reservas_lectura)), sizeof(reservas)) {
+		if (reservas_lectura.ID == idEncontrado) {
+			encontrado = true;
 
-
+			int posicion = static_cast<int>(archivo.tellg() - sizeof(Reservas));
+			std::cout << "ingrese el nuevo responsable: ";
+			std::cin >> reservas_lectura.responsable;
+			std::cout << "ingrese el nuevo aula: ";
+			std::cin >> reservas_lectura.aula;
+			std::cout << "ingrese la nueva cantidad de personas: ";
+			std::cin >> reservas_lectura.cantidad;
+			bool opcion = false;
+			std::cout << "ingrese si es confirmada o activa"<<std::endl;
+			do {
+				std::cout << "si escribe 1 selecciona confirmada si escribe 0 selecciona activa: ";
+				cin >> opcion;
+			} while (opcion != 1 && opcion != 0) 
+			if (opcion == 1)	reservas_lectura.activa = 1;
+			if(opcion == 0) reservas_lectura.confirmada = 1;
+			
+			std::cin >> reservas_lectura.confirmada;
+			if (reservas_lectura.confirmada == 0) {
+				std::cout << "ingrese si es confirmada, si:1 no:0: ";
+				std::cin >> reservas_lectura.activa;
+			}
+			archivo.seekp(posicion);
+			archivo.write(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas));
+			break;
+		}
+	}
+	if (encontrado){
+		std::cout << "modificacion finalizada." << endl;}
+	else std::cout << "no existe el id";
+	archivo.close();
+	return 0;
+}
