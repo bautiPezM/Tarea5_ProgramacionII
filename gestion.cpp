@@ -17,7 +17,7 @@ struct Reservas {
 
 int listaReservas() {
 	Reservas reservas;
-	std::ifstream archivo("reservas.dat", std::ios::binary);
+	std::ifstream archivo("reservas.bin", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -41,7 +41,7 @@ int busquedaID() {
 	std::cout << "Ingrese el ID de la reserva a buscar: ";
 	std::cin >> id;
 	Reservas reservas;
-	std::ifstream archivo("reservas.dat", std::ios::binary);
+	std::ifstream archivo("reservas.bin", std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -64,7 +64,7 @@ int busquedaID() {
 }
 
 int altareservas() {
-	std::ofstream archivo("reservas.dat", std::ios::binary | std::ios::app);
+	std::ofstream archivo("reservas.bin", std::ios::binary | std::ios::app);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return 1;
@@ -88,7 +88,7 @@ int altareservas() {
 	return 0;
 }
 int bajaReserva() {
-	std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
+	std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
 	if (!archivo) {
 		std::cerr << "Error al abrir archivo";
 		return -1;
@@ -112,7 +112,7 @@ int bajaReserva() {
 
 int modificarReserva() {
 
-	std::fstream archivo("reservas.dat", std::ios::in | std::ios::out | std::ios::binary);
+	std::fstream archivo("reservas.bin", std::ios::in | std::ios::out | std::ios::binary);
 	if (!archivo) {
 		std::cout << "Error al abrir el archivo" << std::endl;
 		return -1;
@@ -178,7 +178,7 @@ int modificarReserva() {
 }
 
 int confirmarReserva() {
-	std::fstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
+	std::fstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
 	if (!archivo) {
 		std::cerr << "Error al abrir archivo";
 		return -1;
@@ -218,7 +218,7 @@ int confirmarReserva() {
 
 
 int guardarArchivo() {
-	std::ofstream archivo("reservas.dat", std::ios::binary | std::ios::in | std::ios::out);
+	std::ofstream archivo("reservas.bin", std::ios::binary | std::ios::in | std::ios::out);
 	if (!archivo) throw std::invalid_argument("No hay valores validos");
 
 	std::vector<Reservas> lista;
