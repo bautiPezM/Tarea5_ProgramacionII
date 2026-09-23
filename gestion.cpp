@@ -148,7 +148,7 @@ int modificarReserva() {
 			} while (opcion != '1' && opcion != '0');
 
 
-			reservas_lectura.confirmada = bool(opcion);
+			reservas_lectura.confirmada = (opcion == '1');
 
 
 			do {
@@ -161,7 +161,7 @@ int modificarReserva() {
 
 
 			} while (opcion != '1' && opcion != '0');
-			reservas_lectura.Activo = bool(opcion);
+			reservas_lectura.Activo = (opcion == '1');
 
 			archivo.seekp(posicion);
 			archivo.write(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas));
