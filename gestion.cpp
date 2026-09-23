@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <limits> 
 
 struct Reservas {
 	int idReserva;
@@ -135,25 +136,32 @@ int modificarReserva() {
 			std::cout << "ingrese la nueva cantidad de personas: ";
 			std::cin >> reservas_lectura.CantidadPersonas;
 
-			bool opcion = false;
+			char opcion = ' ';
 
 			do {
 				std::cout << "ingrese si es confirmada" << std::endl;
 				std::cout << "si: 1" << std::endl;
-				std::cout << "no: 0";
+				std::cout << "no: 0" << std::endl;
 				std::cin >> opcion;
 
-			} while (opcion != 1 && opcion != 0);
-			reservas_lectura.confirmada = opcion;
+
+			} while (opcion != '1' && opcion != '0');
+
+
+			reservas_lectura.confirmada = bool(opcion);
+
 
 			do {
+
 				std::cout << "ingrese si es activa" << std::endl;
 				std::cout << "si: 1" << std::endl;
-				std::cout << "no: 0";
-				std::cin >> reservas_lectura.Activo;
+				std::cout << "no: 0" << std::endl;
+				std::cin >> opcion;
 
-			} while (opcion != 1 && opcion != 0);
-			reservas_lectura.Activo = opcion;
+
+
+			} while (opcion != '1' && opcion != '0');
+			reservas_lectura.Activo = bool(opcion);
 
 			archivo.seekp(posicion);
 			archivo.write(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas));
