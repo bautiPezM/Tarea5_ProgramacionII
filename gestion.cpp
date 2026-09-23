@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <limits> 
 
 struct Reservas {
 	int idReserva;
@@ -24,13 +23,15 @@ int listaReservas() {
 	}
 
 	while (archivo.read(reinterpret_cast<char*>(&reservas), sizeof(Reservas))) {
-		std::cout << "ID: " << reservas.idReserva << std::endl;
-		std::cout << "Responsable: " << reservas.Responsable << std::endl;
-		std::cout << "Aula: " << reservas.Aula << std::endl;
-		std::cout << "Cantidad de personas: " << reservas.CantidadPersonas << std::endl;
-		std::cout << "Confirmada: " << (reservas.confirmada ? "Si" : "No") << std::endl;
-		std::cout << "Activo: " << (reservas.Activo ? "Si" : "No") << std::endl;
-		std::cout << "---" << std::endl;
+		if (reservas.Activo) {
+			std::cout << "ID: " << reservas.idReserva << std::endl;
+			std::cout << "Responsable: " << reservas.Responsable << std::endl;
+			std::cout << "Aula: " << reservas.Aula << std::endl;
+			std::cout << "Cantidad de personas: " << reservas.CantidadPersonas << std::endl;
+			std::cout << "Confirmada: " << (reservas.confirmada ? "Si" : "No") << std::endl;
+			std::cout << "Activo: " << (reservas.Activo ? "Si" : "No") << std::endl;
+			std::cout << "---" << std::endl;
+		}
 	}
 	archivo.close();
 	return 1;
@@ -102,11 +103,13 @@ int bajaReserva() {
 			encontrado = true;
 			int posicion = static_cast<int>(archivo.tellg()) - sizeof(Reservas);
 			r.Activo = false;
+			archivo.clear(); // Limpiar el estado del flujo antes de escribir
 			archivo.seekp(posicion);
 			archivo.write(reinterpret_cast<char*>(&r), sizeof(Reservas));
 			break;
 		}
 	}
+	archivo.close();
 	return 0;
 }
 
@@ -136,32 +139,25 @@ int modificarReserva() {
 			std::cout << "ingrese la nueva cantidad de personas: ";
 			std::cin >> reservas_lectura.CantidadPersonas;
 
-			char opcion = ' ';
+			bool opcion = false;
 
 			do {
 				std::cout << "ingrese si es confirmada" << std::endl;
 				std::cout << "si: 1" << std::endl;
-				std::cout << "no: 0" << std::endl;
+				std::cout << "no: 0";
 				std::cin >> opcion;
 
-
-			} while (opcion != '1' && opcion != '0');
-
-
-			reservas_lectura.confirmada = (opcion == '1');
-
+			} while (opcion != 1 && opcion != 0);
+			reservas_lectura.confirmada = opcion;
 
 			do {
-
 				std::cout << "ingrese si es activa" << std::endl;
 				std::cout << "si: 1" << std::endl;
-				std::cout << "no: 0" << std::endl;
-				std::cin >> opcion;
+				std::cout << "no: 0";
+				std::cin >> reservas_lectura.Activo;
 
-
-
-			} while (opcion != '1' && opcion != '0');
-			reservas_lectura.Activo = (opcion == '1');
+			} while (opcion != 1 && opcion != 0);
+			reservas_lectura.Activo = opcion;
 
 			archivo.seekp(posicion);
 			archivo.write(reinterpret_cast<char*>(&reservas_lectura), sizeof(Reservas));
@@ -199,7 +195,7 @@ int confirmarReserva() {
 		}
 		else if (r.idReserva == idbuscar && r.Activo && r.confirmada == true) {
 			encontrado = true;
-			std::cout << "La reserva ya está confirmada." << std::endl;
+			std::cout << "La reserva ya est? confirmada." << std::endl;
 			break;
 		}
 		else if (r.idReserva == idbuscar && !r.Activo) {
@@ -209,7 +205,7 @@ int confirmarReserva() {
 		}
 	}
 	if (!encontrado) {
-		std::cout << "No se encontró la reserva con el ID especificado." << std::endl;
+		std::cout << "No se encontro la reserva con el ID especificado." << std::endl;
 	}
 	archivo.close();
 	return 0;
@@ -224,13 +220,30 @@ int guardarArchivo() {
 	std::vector<Reservas> lista;
 
 	for (size_t i = 0; i < sizeof(Reservas); i++) {
-
-
-
-
 		archivo.write(reinterpret_cast<const char*>(&lista[i]), sizeof(Reservas));
 	}
 	archivo.close();
 	return 0;
 }
 
+int consultaEspecial() {
+	std::ifstream archivo("reservas.bin", std::ios::binary | std::ios::in);
+	if (!archivo) {
+		std::cerr << "Error al abrir archivo";
+		return -1;
+	}
+	Reservas r;
+	std::cout << "Reservas activas y confirmadas:" << std::endl;
+	while (archivo.read(reinterpret_cast<char*>(&r), sizeof(Reservas))) {
+		if (r.Activo && r.confirmada) {
+			std::cout << "Id de Reserva: " << r.idReserva << std::endl;
+			std::cout << "Responsable: " << r.Responsable << std::endl;
+			std::cout << "Aula: " << r.Aula << std::endl;
+			std::cout << "Cantidad de personas: " << r.CantidadPersonas << std::endl;
+			for (int i = 0;i <= 30;i++) std::cout << "=";
+			std::cout << std::endl;
+		}
+	}
+	archivo.close();
+	return 0;
+}
